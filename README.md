@@ -7,7 +7,7 @@
 `simple-http2-server` is `go get`-able:
 
 ```
-$ go get github.com/GoogleChrome/simplehttp2server
+$ go get github.com/DesmondANIMUS/simple-http2-server
 ```
 
 # Usage
