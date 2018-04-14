@@ -29,16 +29,7 @@ func main() {
 	}
 }
 
-func index(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "session")
-
-	if r.Method == http.MethodPost {
-		if r.FormValue("email") != "" {
-			session.Values["email"] = r.FormValue("email")
-		}
-		session.Save(r, w)
-	}
-
+func index(w http.ResponseWriter, r *http.Request) {	
 	if pusher, ok := w.(http.Pusher); ok {
 		options := &http.PushOptions{
 			Header: http.Header{
@@ -61,8 +52,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	tpl.ExecuteTemplate(w, "cook.html", nil)
 	log.Println(r.URL.Path)
 }
-
-var store = sessions.NewCookieStore([]byte("something-very-secret"))
 
 /*
    Process for handling TLS Secure Connections for your WebServices:
