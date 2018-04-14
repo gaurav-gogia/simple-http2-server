@@ -3,10 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
-
-	"github.com/gorilla/sessions"
 )
 
 var tpl *template.Template
@@ -21,36 +18,27 @@ func main() {
 			http.FileServer(http.Dir("./assets"))))
 
 	http.HandleFunc("/", index)
-
-	go http.ListenAndServe(":5000", nil)
-	err := http.ListenAndServeTLS(":8888", "cert.pem", "key.pem", nil)
-	if err != nil {
-		log.Println(err)
-	}
+	http.ListenAndServeTLS(":8888", "cert.pem", "key.pem", nil)
 }
 
 func index(w http.ResponseWriter, r *http.Request) {	
 	if pusher, ok := w.(http.Pusher); ok {
+		
 		options := &http.PushOptions{
 			Header: http.Header{
 				"Accept-Encoding": r.Header["Accept-Encoding"],
 			},
 		}
-		if err := pusher.Push("/assets/js/login.js", options); err != nil {
-			fmt.Println(err)
-		}
-		if err := pusher.Push("/assets/css/normalizeLogin.css", options); err != nil {
-			fmt.Println(err)
-		}
-		if err := pusher.Push("/assets/css/styleLogin.css", options); err != nil {
-			fmt.Println(err)
-		}
+		
+		pusher.Push("/assets/js/login.js", options)
+		pusher.Push("/assets/css/normalizeLogin.css", options)
+		pusher.Push("/assets/css/styleLogin.css", options)
+
 	} else {
 		fmt.Println("COULD NOT PUSH")
 	}
 
-	tpl.ExecuteTemplate(w, "cook.html", nil)
-	log.Println(r.URL.Path)
+	tpl.ExecuteTemplate(w, "cook.html", nil)	
 }
 
 /*
